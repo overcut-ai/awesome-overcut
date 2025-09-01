@@ -6,5 +6,6 @@ export type HotelOrderByInput = {
   description?: SortOrder;
   id?: SortOrder;
   name?: SortOrder;
+  phone?: SortOrder;
   updatedAt?: SortOrder;
 };

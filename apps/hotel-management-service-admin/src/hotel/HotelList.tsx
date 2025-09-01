@@ -11,6 +11,7 @@ export const HotelList = (props: ListProps): React.ReactElement => {
         <TextField label="description" source="description" />
         <TextField label="ID" source="id" />
         <TextField label="name" source="name" />
+        <TextField label="Phone" source="phone" />
         <DateField source="updatedAt" label="Updated At" />{" "}
       </Datagrid>
     </List>

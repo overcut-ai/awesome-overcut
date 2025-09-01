@@ -7,5 +7,6 @@ export type HotelWhereInput = {
   description?: StringNullableFilter;
   id?: StringFilter;
   name?: StringNullableFilter;
+  phone?: StringNullableFilter;
   rooms?: RoomListRelationFilter;
 };

@@ -39,6 +39,7 @@ export class HotelControllerBase {
         description: true,
         id: true,
         name: true,
+        phone: true,
         updatedAt: true,
       },
     });
@@ -57,6 +58,7 @@ export class HotelControllerBase {
         description: true,
         id: true,
         name: true,
+        phone: true,
         updatedAt: true,
       },
     });
@@ -76,6 +78,7 @@ export class HotelControllerBase {
         description: true,
         id: true,
         name: true,
+        phone: true,
         updatedAt: true,
       },
     });
@@ -104,6 +107,7 @@ export class HotelControllerBase {
           description: true,
           id: true,
           name: true,
+          phone: true,
           updatedAt: true,
         },
       });
@@ -132,6 +136,7 @@ export class HotelControllerBase {
           description: true,
           id: true,
           name: true,
+          phone: true,
           updatedAt: true,
         },
       });

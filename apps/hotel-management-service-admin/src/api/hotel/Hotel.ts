@@ -6,6 +6,7 @@ export type Hotel = {
   description: string | null;
   id: string;
   name: string | null;
+  phone: string | null;
   rooms?: Array<Room>;
   updatedAt: Date;
 };

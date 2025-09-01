@@ -22,6 +22,7 @@ export const HotelShow = (props: ShowProps): React.ReactElement => {
         <TextField label="description" source="description" />
         <TextField label="ID" source="id" />
         <TextField label="name" source="name" />
+        <TextField label="Phone" source="phone" />
         <DateField source="updatedAt" label="Updated At" />
         <ReferenceManyField reference="Room" target="hotelId" label="Rooms">
           <Datagrid rowClick="show" bulkActionButtons={false}>

@@ -1,4 +1,4 @@
-# Hotel Management Service ❖ *Amplication generated*
+# Hotel Management Service 
 
 A full-stack, **monorepo** project that demonstrates a modern Hotel-Management Service built with [Amplication](https://amplication.com).  
 It contains two ready-to-run applications:

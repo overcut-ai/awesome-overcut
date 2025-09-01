@@ -227,3 +227,6 @@ This project is licensed under the **Apache License 2.0** – see the [LICENSE](
 * Generated with [Amplication](https://amplication.com) – an open-source platform for building Node.js applications.  
 * Built with amazing open-source software:  
   * [NestJS](https://nestjs.com) • [Prisma](https://www.prisma.io) • [React](https://react.dev) • [React-Admin](https://marmelab.com/react-admin/) • and many more.
+
+## Automation Test
+This section was added automatically by Overcut to test write and edit capabilities.

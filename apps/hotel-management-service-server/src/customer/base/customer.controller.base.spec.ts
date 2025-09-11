@@ -14,6 +14,7 @@ import { AclValidateRequestInterceptor } from "../../interceptors/aclValidateReq
 import { map } from "rxjs";
 import { CustomerController } from "../customer.controller";
 import { CustomerService } from "../customer.service";
+import { DuplicatePhoneNumberError } from "../../errors";
 
 const nonExistingId = "nonExistingId";
 const existingId = "existingId";
@@ -23,7 +24,7 @@ const CREATE_INPUT = {
   firstName: "exampleFirstName",
   id: "exampleId",
   lastName: "exampleLastName",
-  phoneNumber: "examplePhoneNumber",
+  phoneNumber: "1234567890",
   updatedAt: new Date(),
 };
 const CREATE_RESULT = {
@@ -32,7 +33,7 @@ const CREATE_RESULT = {
   firstName: "exampleFirstName",
   id: "exampleId",
   lastName: "exampleLastName",
-  phoneNumber: "examplePhoneNumber",
+  phoneNumber: "1234567890",
   updatedAt: new Date(),
 };
 const FIND_MANY_RESULT = [
@@ -42,7 +43,7 @@ const FIND_MANY_RESULT = [
     firstName: "exampleFirstName",
     id: "exampleId",
     lastName: "exampleLastName",
-    phoneNumber: "examplePhoneNumber",
+    phoneNumber: "1234567890",
     updatedAt: new Date(),
   },
 ];
@@ -52,13 +53,18 @@ const FIND_ONE_RESULT = {
   firstName: "exampleFirstName",
   id: "exampleId",
   lastName: "exampleLastName",
-  phoneNumber: "examplePhoneNumber",
+  phoneNumber: "1234567890",
   updatedAt: new Date(),
 };
 
+let createdOnce = false;
 const service = {
-  createCustomer() {
-    return CREATE_RESULT;
+  createCustomer: () => {
+    if (!createdOnce) {
+      createdOnce = true;
+      return CREATE_RESULT;
+    }
+    throw new DuplicatePhoneNumberError();
   },
   customers: () => FIND_MANY_RESULT,
   customer: ({ where }: { where: { id: string } }) => {
@@ -180,24 +186,12 @@ describe("Customer", () => {
 
   test("POST /customers existing resource", async () => {
     const agent = request(app.getHttpServer());
+
+    // Attempt to create again with duplicate phone number should result in 409
     await agent
       .post("/customers")
       .send(CREATE_INPUT)
-      .expect(HttpStatus.CREATED)
-      .expect({
-        ...CREATE_RESULT,
-        createdAt: CREATE_RESULT.createdAt.toISOString(),
-        updatedAt: CREATE_RESULT.updatedAt.toISOString(),
-      })
-      .then(function () {
-        agent
-          .post("/customers")
-          .send(CREATE_INPUT)
-          .expect(HttpStatus.CONFLICT)
-          .expect({
-            statusCode: HttpStatus.CONFLICT,
-          });
-      });
+      .expect(HttpStatus.CONFLICT);
   });
 
   afterAll(async () => {

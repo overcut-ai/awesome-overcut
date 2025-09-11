@@ -14,6 +14,8 @@ import { ApiProperty } from "@nestjs/swagger";
 import {
   IsString,
   IsOptional,
+  IsNotEmpty,
+  Matches,
   MaxLength,
   ValidateNested,
 } from "class-validator";
@@ -58,16 +60,18 @@ class CustomerCreateInput {
   lastName?: string | null;
 
   @ApiProperty({
-    required: false,
+    required: true,
     type: String,
+    description: "Customer's phone number (must be unique across all customers)",
+    example: "1234567890",
   })
   @IsString()
-  @MaxLength(1000)
-  @IsOptional()
+  @IsNotEmpty()
+  @Matches(/^[0-9]{7,15}$/)
   @Field(() => String, {
-    nullable: true,
+    nullable: false,
   })
-  phoneNumber?: string | null;
+  phoneNumber!: string;
 
   @ApiProperty({
     required: false,

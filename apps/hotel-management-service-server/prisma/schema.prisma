@@ -47,7 +47,7 @@ model Customer {
   firstName    String?
   id           String        @id @default(cuid())
   lastName     String?
-  phoneNumber  String?
+  phoneNumber  String @unique
   reservations Reservation[]
   updatedAt    DateTime      @updatedAt
 }

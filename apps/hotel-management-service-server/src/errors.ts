@@ -14,3 +14,14 @@ export class NotFoundException extends common.NotFoundException {
   @ApiProperty()
   message!: string;
 }
+
+export class DuplicatePhoneNumberError extends common.ConflictException {
+  @ApiProperty()
+  statusCode!: number;
+  @ApiProperty()
+  message!: string;
+
+  constructor(message = "Customer with this phone number already exists") {
+    super(message);
+  }
+}

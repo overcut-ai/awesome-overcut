@@ -180,6 +180,17 @@ Inside `apps/hotel-management-service-admin`:
 
 The Prisma schema is located under `apps/hotel-management-service-server/prisma/schema.prisma`.
 
+> **Note**: Starting from the next release the `phoneNumber` field on the **Customer** model is now **required and unique** (non-nullable). Attempting to insert two customers with the same phone number – or omitting a phone number – will result in an HTTP 409 Conflict or 400 validation error respectively.
+>
+> Before you deploy this change to an existing database **you must clean up existing duplicates** (if any). A helper script is provided:
+>
+> ```bash
+> cd apps/hotel-management-service-server
+> npm run cleanup:duplicates   # removes duplicates, keeping the earliest record per phone number
+> ```
+> 
+> Run the script once, verify the output, then proceed with the Prisma migration.
+
 * Create & apply a new migration:
 
   ```bash

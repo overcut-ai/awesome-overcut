@@ -8,3 +8,7 @@
 
 ALTER TABLE "Customer"
 ADD CONSTRAINT "Customer_phoneNumber_key" UNIQUE ("phoneNumber");
+
+-- Make phoneNumber non-nullable now that duplicates are removed
+ALTER TABLE "Customer"
+ALTER COLUMN "phoneNumber" SET NOT NULL;

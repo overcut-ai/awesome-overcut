@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
-- **Database**: Added a unique constraint on `phoneNumber` column of the `Customer` table (Prisma schema & migration).
+- **Database**: Added a unique **and non-nullable** constraint on `phoneNumber` column of the `Customer` table (Prisma schema & migration).
 - **API**: Implemented application-level handling for duplicate phone numbers – requests that attempt to create a customer with an existing `phoneNumber` now return **HTTP 409 Conflict** (error code `DuplicatePhoneNumberError`).
 - **Validation**: `CustomerCreateInput` now validates that `phoneNumber` is non-empty and matches the expected numeric pattern.
 - **Testing**: Added unit and integration tests covering duplicate phone number scenarios.

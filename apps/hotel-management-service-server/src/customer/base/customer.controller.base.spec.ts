@@ -4,6 +4,7 @@ import {
   HttpStatus,
   ExecutionContext,
   CallHandler,
+  ValidationPipe,
 } from "@nestjs/common";
 import request from "supertest";
 import { ACGuard } from "nest-access-control";
@@ -19,7 +20,7 @@ const nonExistingId = "nonExistingId";
 const existingId = "existingId";
 const CREATE_INPUT = {
   createdAt: new Date(),
-  email: "exampleEmail",
+  email: "test@example.com",
   firstName: "exampleFirstName",
   id: "exampleId",
   lastName: "exampleLastName",
@@ -28,7 +29,7 @@ const CREATE_INPUT = {
 };
 const CREATE_RESULT = {
   createdAt: new Date(),
-  email: "exampleEmail",
+  email: "test@example.com",
   firstName: "exampleFirstName",
   id: "exampleId",
   lastName: "exampleLastName",
@@ -38,7 +39,7 @@ const CREATE_RESULT = {
 const FIND_MANY_RESULT = [
   {
     createdAt: new Date(),
-    email: "exampleEmail",
+    email: "test@example.com",
     firstName: "exampleFirstName",
     id: "exampleId",
     lastName: "exampleLastName",
@@ -48,7 +49,7 @@ const FIND_MANY_RESULT = [
 ];
 const FIND_ONE_RESULT = {
   createdAt: new Date(),
-  email: "exampleEmail",
+  email: "test@example.com",
   firstName: "exampleFirstName",
   id: "exampleId",
   lastName: "exampleLastName",
@@ -128,6 +129,9 @@ describe("Customer", () => {
       .compile();
 
     app = moduleRef.createNestApplication();
+    app.useGlobalPipes(
+      new ValidationPipe({ transform: true, forbidUnknownValues: false })
+    );
     await app.init();
   });
 
@@ -176,6 +180,25 @@ describe("Customer", () => {
         createdAt: FIND_ONE_RESULT.createdAt.toISOString(),
         updatedAt: FIND_ONE_RESULT.updatedAt.toISOString(),
       });
+  });
+
+  test("POST /customers invalid email returns 400", async () => {
+    await request(app.getHttpServer())
+      .post("/customers")
+      .send({
+        ...CREATE_INPUT,
+        email: "badEmail",
+      })
+      .expect(HttpStatus.BAD_REQUEST);
+  });
+
+  test("PATCH /customers/:id invalid email returns 400", async () => {
+    await request(app.getHttpServer())
+      .patch(`/customers/${existingId}`)
+      .send({
+        email: "badEmail",
+      })
+      .expect(HttpStatus.BAD_REQUEST);
   });
 
   test("POST /customers existing resource", async () => {

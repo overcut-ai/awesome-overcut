@@ -227,3 +227,17 @@ This project is licensed under the **Apache License 2.0** – see the [LICENSE](
 * Generated with [Amplication](https://amplication.com) – an open-source platform for building Node.js applications.  
 * Built with amazing open-source software:  
   * [NestJS](https://nestjs.com) • [Prisma](https://www.prisma.io) • [React](https://react.dev) • [React-Admin](https://marmelab.com/react-admin/) • and many more.
+
+---
+
+## API Changes
+
+### Customer Email Validation (Unreleased)
+
+Starting from the **next release** the `email` field on the *Customer* entity is **validated for correct e-mail format** on both *create* and *update* endpoints.
+
+* The field remains **optional** – omitting it is still allowed.
+* When supplied, the value must conform to a valid e-mail address format (RFC 5322).  
+  Requests with an invalid e-mail now respond with **HTTP 400 – Bad Request** containing a validation error message.
+
+> ⚠️  This is a **breaking change** for clients that previously sent non-email values (e.g. usernames, phone numbers, etc.) in the `email` property. Ensure client applications are updated accordingly.

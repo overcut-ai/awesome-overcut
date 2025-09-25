@@ -150,6 +150,8 @@ Each application is an isolated npm project with its own `package.json`, Dockerf
 
 ### Server scripts
 
+> Validation note: The **Customer** entity's `email` field is validated using `class-validator`'s `@IsEmail` decorator. API requests to create or update a customer with an invalid email will be rejected with **HTTP 400** and the error message `Invalid email format`.
+
 Inside `apps/hotel-management-service-server`:
 
 | Script | Description |

@@ -14,7 +14,8 @@ describe("Testing the HealthServiceBase", () => {
     });
     it("should return true if allow connection to db", async () => {
       //ARRANGE
-      (prismaService.$queryRaw as jest.Mock).mockReturnValue(
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      (prismaService as any).$queryRaw = jest.fn().mockReturnValue(
         Promise.resolve(true)
       );
       //ACT
@@ -24,7 +25,8 @@ describe("Testing the HealthServiceBase", () => {
     });
     it("should return false if db is not available", async () => {
       //ARRANGE
-      (prismaService.$queryRaw as jest.Mock).mockReturnValue(
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      (prismaService as any).$queryRaw = jest.fn().mockReturnValue(
         Promise.reject(false)
       );
       //ACT

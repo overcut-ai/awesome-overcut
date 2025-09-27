@@ -8,6 +8,8 @@
 
 This service was generated with Amplication. The server-side of the generated project. This component provides the different backend services - i.e., REST API, GraphQL API, authentication, authorization, logging, data validation and the connection to the database. Additional information about the server component and the architecture around it, can be found on the [documentation](https://docs.amplication.com/guides/getting-started) site.
 
+> **New in this release (unreleased):** The `customer.email` field is now validated for proper email format at both the DTO and API levels. Requests that contain an invalid email (e.g. `"foo"`) will be rejected with a `400 Bad Request` response and the message `"Invalid email format"`. See [issue #55](https://github.com/overcut-ai/awesome-overcut/issues/55) for details.
+
 # Getting started
 
 ## Step 1: Configuration

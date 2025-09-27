@@ -13,6 +13,7 @@ import { InputType, Field } from "@nestjs/graphql";
 import { ApiProperty } from "@nestjs/swagger";
 import {
   IsString,
+  IsEmail,
   IsOptional,
   MaxLength,
   ValidateNested,
@@ -26,7 +27,7 @@ class CustomerCreateInput {
     required: false,
     type: String,
   })
-  @IsString()
+  @IsEmail()
   @IsOptional()
   @Field(() => String, {
     nullable: true,

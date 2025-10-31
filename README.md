@@ -203,6 +203,26 @@ npm run test
 
 ---
 
+## Security & Secret Management
+
+**Important:** As of [PR #??](https://github.com/overcut-ai/awesome-overcut/pull/XXX) we removed all plaintext secret files from version control.
+
+1. Secrets such as database credentials and API keys **must not** be committed to the repository.
+2. Runtime configuration is supplied exclusively via **environment variables** or your CI/CD secrets store.
+3. A template file [`.env.example`](./.env.example) lists all required variables with empty placeholder values. Copy it to `.env` (which is git-ignored) and fill in values for **local development only**:
+
+   ```bash
+   cp .env.example .env    # create local env file
+   # then edit .env and set the variables
+   ```
+
+4. For production/staging environments use your orchestrator (Docker, Kubernetes, Vercel, etc.) or a dedicated secrets manager (AWS Secrets Manager, HashiCorp Vault, etc.) to inject environment variables securely.
+5. Our CI pipeline includes secret-scanning to prevent accidental leaks on future commits.
+
+---
+
+---
+
 ## Contributing
 
 Pull requests are welcome! For major changes please open an issue first to discuss what you would like to change.

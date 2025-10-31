@@ -227,3 +227,16 @@ This project is licensed under the **Apache License 2.0** – see the [LICENSE](
 * Generated with [Amplication](https://amplication.com) – an open-source platform for building Node.js applications.  
 * Built with amazing open-source software:  
   * [NestJS](https://nestjs.com) • [Prisma](https://www.prisma.io) • [React](https://react.dev) • [React-Admin](https://marmelab.com/react-admin/) • and many more.
+
+---
+
+## Configuration
+
+### Environment Variables
+
+The server’s CORS policy can be restricted via the `CORS_ALLOWED_ORIGINS` variable (comma-separated list). If omitted, it defaults to the local dev origins `http://localhost:3000` and `http://localhost:4200`.
+
+```
+# See .env.example for the complete template
+CORS_ALLOWED_ORIGINS=http://admin.example.com,https://app.example.com
+```

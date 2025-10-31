@@ -1,0 +1,7 @@
+{
+  "name": "awesome-overcut-root",
+  "private": true,
+  "scripts": {
+    "lint:cors": "! grep -R --line-number -- '{ cors: true }' apps/*/src/main.ts || (echo 'Error: Disallowed permissive CORS usage found.' && exit 1)"
+  }
+}

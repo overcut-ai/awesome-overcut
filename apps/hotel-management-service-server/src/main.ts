@@ -13,7 +13,18 @@ import {
 const { PORT = 3000 } = process.env;
 
 async function main() {
-  const app = await NestFactory.create(AppModule, { cors: true });
+  const app = await NestFactory.create(AppModule);
+
+  const allowedOrigins =
+    process.env.CORS_ALLOWED_ORIGINS?.split(',').map(o => o.trim()) ?? [
+      'http://localhost:3000',
+      'http://localhost:4200',
+    ];
+
+  app.enableCors({
+    origin: allowedOrigins,
+    credentials: true,
+  });
 
   app.setGlobalPrefix("api");
   app.useGlobalPipes(

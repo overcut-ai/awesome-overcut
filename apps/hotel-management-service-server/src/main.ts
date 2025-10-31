@@ -13,7 +13,56 @@ import {
 const { PORT = 3000 } = process.env;
 
 async function main() {
-  const app = await NestFactory.create(AppModule, { cors: true });
+  // Configure CORS to allow credentials and specific origins
+  const corsOrigins = process.env.CORS_ORIGIN
+    ? process.env.CORS_ORIGIN.split(",")
+    : true;
+
+  const app = await NestFactory.create(AppModule, {
+    cors: {
+      origin: corsOrigins,
+      credentials: true,
+    },
+  });
+
+  // Enable security headers via helmet including a strict Content Security Policy
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const helmet = (await import("helmet")).default;
+  app.use(
+    helmet({
+      // Disable the default CSP so we can configure our own below
+      contentSecurityPolicy: false,
+    })
+  );
+  // Apply a minimal CSP allowing resources only from self
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const { contentSecurityPolicy } = await import("helmet");
+  app.use(
+    contentSecurityPolicy({
+      directives: {
+        defaultSrc: ["'self'"],
+        objectSrc: ["'none'"],
+        baseUri: ["'self'"],
+        scriptSrc: ["'self'"]
+      },
+    })
+  );
+
+  // Enable cookie parsing for inbound requests
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  const cookieParser = (await import("cookie-parser")).default;
+  app.use(cookieParser());
+
+  // Attach Authorization header from accessToken cookie when header is missing
+  app.use((req, _res, next) => {
+    if (!req.headers["authorization"] && req.cookies?.accessToken) {
+      req.headers["authorization"] = `Bearer ${req.cookies.accessToken}`;
+    }
+    next();
+  });
 
   app.setGlobalPrefix("api");
   app.useGlobalPipes(

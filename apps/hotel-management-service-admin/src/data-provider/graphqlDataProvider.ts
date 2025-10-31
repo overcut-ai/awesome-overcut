@@ -1,26 +1,28 @@
 import buildGraphQLProvider from "ra-data-graphql-amplication";
 import { ApolloClient, InMemoryCache, createHttpLink } from "@apollo/client";
-import { setContext } from "@apollo/client/link/context";
-import { CREDENTIALS_LOCAL_STORAGE_ITEM } from "../constants";
+// We no longer need to manually inject an Authorization header; rely on cookies.
 
 const httpLink = createHttpLink({
   uri: `${import.meta.env.VITE_REACT_APP_SERVER_URL}/graphql`,
+  credentials: "include", // send cookies with each request
 });
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
-const authLink = setContext((_, { headers }) => {
-  const token = localStorage.getItem(CREDENTIALS_LOCAL_STORAGE_ITEM);
-  return {
-    headers: {
-      ...headers,
-      authorization: token ? token : "",
-    },
-  };
-});
 
 export const apolloClient = new ApolloClient({
   cache: new InMemoryCache(),
-  link: authLink.concat(httpLink),
+  link: httpLink,
+  // Always include credentials (cookies) in requests
+  defaultOptions: {
+    watchQuery: {
+      fetchPolicy: "cache-and-network",
+    },
+    query: {
+      fetchPolicy: "network-only",
+    },
+    mutate: {
+      fetchPolicy: "no-cache",
+    },
+  },
 });
 
 export default buildGraphQLProvider({

@@ -119,6 +119,8 @@ If you prefer running Node processes on the host machine:
    npm run start
    ```
 
+Authentication now relies on **HttpOnly cookies** instead of `localStorage` tokens. Make sure the Admin UI is served from an origin listed in the `CORS_ORIGIN` env variable (defaults to `http://localhost:3001` in dev). When `NODE_ENV=development`, cookies are sent over plain HTTP for local testing; in production they require HTTPS.
+
 By default the Admin UI expects the server at `http://localhost:3000`.  
 Change `REACT_APP_SERVER_URL` in `apps/hotel-management-service-admin/.env` if needed.
 

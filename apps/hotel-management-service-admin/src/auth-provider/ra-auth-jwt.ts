@@ -1,9 +1,6 @@
 import { gql } from "@apollo/client/core";
 import { AuthProvider } from "react-admin";
-import {
-  CREDENTIALS_LOCAL_STORAGE_ITEM,
-  USER_DATA_LOCAL_STORAGE_ITEM,
-} from "../constants";
+// Note: We no longer persist credentials in localStorage.
 import { Credentials, LoginMutateResult } from "../types";
 import { apolloClient } from "../data-provider/graphqlDataProvider";
 
@@ -26,47 +23,52 @@ export const jwtAuthProvider: AuthProvider = {
     });
 
     if (userData && userData.data?.login.username) {
-      localStorage.setItem(
-        CREDENTIALS_LOCAL_STORAGE_ITEM,
-        createBearerAuthorizationHeader(userData.data.login?.accessToken)
-      );
-      localStorage.setItem(
-        USER_DATA_LOCAL_STORAGE_ITEM,
-        JSON.stringify(userData.data)
-      );
+      // Cookie is automatically set by the server; nothing to persist client-side
       return Promise.resolve();
     }
     return Promise.reject();
   },
-  logout: () => {
-    localStorage.removeItem(CREDENTIALS_LOCAL_STORAGE_ITEM);
-    return Promise.resolve();
+  logout: async () => {
+    // Invoke backend mutation to clear HttpOnly cookie
+    const LOGOUT = gql`
+      mutation logout {
+        logout
+      }
+    `;
+    try {
+      await apolloClient.mutate({ mutation: LOGOUT });
+      // Apollo will include cookies automatically (credentials: include)
+      return Promise.resolve();
+    } catch (e) {
+      return Promise.reject(e);
+    }
   },
   checkError: ({ status }: any) => {
     if (status === 401 || status === 403) {
-      localStorage.removeItem(CREDENTIALS_LOCAL_STORAGE_ITEM);
       return Promise.reject();
     }
     return Promise.resolve();
   },
-  checkAuth: () => {
-    return localStorage.getItem(CREDENTIALS_LOCAL_STORAGE_ITEM)
-      ? Promise.resolve()
-      : Promise.reject();
+  checkAuth: async () => {
+    // Query backend `me` (lightweight) to confirm cookie validity
+    const ME = gql`
+      query me {
+        me {
+          id
+        }
+      }
+    `;
+    try {
+      await apolloClient.query({ query: ME, fetchPolicy: "network-only" });
+      return Promise.resolve();
+    } catch (error) {
+      // If request fails due to 401/403 or network error, treat as unauthenticated
+      return Promise.reject(error);
+    }
   },
   getPermissions: () => Promise.reject("Unknown method"),
   getIdentity: () => {
-    const str = localStorage.getItem(USER_DATA_LOCAL_STORAGE_ITEM);
-    const userData: LoginMutateResult = JSON.parse(str || "");
-
-    return Promise.resolve({
-      id: userData.login.username,
-      fullName: userData.login.username,
-      avatar: undefined,
-    });
+    // TODO: Optionally fetch current user via a `me` query. For now, return empty.
+    return Promise.resolve({ id: undefined, fullName: undefined, avatar: undefined });
   },
 };
-
-export function createBearerAuthorizationHeader(accessToken: string) {
-  return `Bearer ${accessToken}`;
-}

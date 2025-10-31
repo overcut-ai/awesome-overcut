@@ -1,9 +1,6 @@
 import { gql } from "@apollo/client/core";
 import { AuthProvider } from "react-admin";
-import {
-  CREDENTIALS_LOCAL_STORAGE_ITEM,
-  USER_DATA_LOCAL_STORAGE_ITEM,
-} from "../constants";
+// Using Basic auth over cookies is deprecated; we keep provider but without localStorage persistence.
 import { Credentials, LoginMutateResult } from "../types";
 import { apolloClient } from "../data-provider/graphqlDataProvider";
 
@@ -26,48 +23,21 @@ export const httpAuthProvider: AuthProvider = {
     });
 
     if (userData && userData.data?.login.username) {
-      localStorage.setItem(
-        CREDENTIALS_LOCAL_STORAGE_ITEM,
-        createBasicAuthorizationHeader(
-          credentials.username,
-          credentials.password
-        )
-      );
-      localStorage.setItem(
-        USER_DATA_LOCAL_STORAGE_ITEM,
-        JSON.stringify(userData.data)
-      );
+      // Basic auth header will be carried only within this runtime, not persisted.
       return Promise.resolve();
     }
     return Promise.reject();
   },
-  logout: () => {
-    localStorage.removeItem(CREDENTIALS_LOCAL_STORAGE_ITEM);
-    return Promise.resolve();
-  },
+  logout: () => Promise.resolve(),
   checkError: ({ status }: any) => {
     if (status === 401 || status === 403) {
-      localStorage.removeItem(CREDENTIALS_LOCAL_STORAGE_ITEM);
       return Promise.reject();
     }
     return Promise.resolve();
   },
-  checkAuth: () => {
-    return localStorage.getItem(CREDENTIALS_LOCAL_STORAGE_ITEM)
-      ? Promise.resolve()
-      : Promise.reject();
-  },
+  checkAuth: () => Promise.resolve(),
   getPermissions: () => Promise.reject("Unknown method"),
-  getIdentity: () => {
-    const str = localStorage.getItem(USER_DATA_LOCAL_STORAGE_ITEM);
-    const userData: LoginMutateResult = JSON.parse(str || "");
-
-    return Promise.resolve({
-      id: userData.login.username,
-      fullName: userData.login.username,
-      avatar: undefined,
-    });
-  },
+  getIdentity: () => Promise.resolve({ id: undefined, fullName: undefined, avatar: undefined }),
 };
 
 function createBasicAuthorizationHeader(

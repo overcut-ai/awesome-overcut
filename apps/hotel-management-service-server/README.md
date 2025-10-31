@@ -24,7 +24,9 @@ Configuration for the server component can be provided through the use of enviro
 | DB_USER              | the username used to connect to the database | [username]                                                          |
 | DB_PASSWORD          | the password used to connect to the database | [password]                                                          |
 | DB_NAME              | the name of the database                     | [service-name] / [project-name]                                     |
-| JWT_SECRET_KEY       | the secret used to sign the json-web token   | [secret]                                                            |
+| JWT_SECRET       | the secret used to sign the JSON Web Token   | [secret]                                                            |
+| CORS_ORIGIN      | comma-separated list of allowed origins for CORS (e.g., http://localhost:3001) | http://localhost:3001 |
+| NODE_ENV         | set to `development` to allow non-secure cookies over HTTP | development |
 | JWT_EXPIRATION       | the expiration time for the json-web token   | 2d                                                                  |
 
 > **Note**

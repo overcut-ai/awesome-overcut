@@ -68,6 +68,7 @@
   "jest": {
     "preset": "ts-jest",
     "testEnvironment": "node",
+    "detectOpenHandles": true,
     "moduleNameMapper": {
       "@app/custom-validators": "<rootDir>/src/validators"
     },

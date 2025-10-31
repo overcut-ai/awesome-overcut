@@ -1,7 +1,5 @@
 import { PrismaClient } from "@prisma/client";
 
-export async function customSeed() {
-  const client = new PrismaClient();
-
-  client.$disconnect();
+export async function customSeed(client: PrismaClient) {
+  // TODO: add seeding logic here using the provided client instance
 }

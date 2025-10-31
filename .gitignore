@@ -1,0 +1,6 @@
+# Sensitive files
+*.env
+*.env.*
+
+# Allow the public template
+!.env.example

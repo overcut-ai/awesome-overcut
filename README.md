@@ -227,3 +227,19 @@ This project is licensed under the **Apache License 2.0** – see the [LICENSE](
 * Generated with [Amplication](https://amplication.com) – an open-source platform for building Node.js applications.  
 * Built with amazing open-source software:  
   * [NestJS](https://nestjs.com) • [Prisma](https://www.prisma.io) • [React](https://react.dev) • [React-Admin](https://marmelab.com/react-admin/) • and many more.
+
+---
+
+## API Pagination & List Limits
+
+To ensure stable performance and prevent accidental full-table scans, the server enforces a **maximum page size of 100 records** on all list (findMany) endpoints. If a request omits the `take` query parameter—or specifies a value greater than 100—the response will be limited to 100 items.
+
+Guidelines:
+
+1. Always include an explicit `take` parameter when paginating large datasets.
+2. Values of `take` greater than `100` are automatically reduced to `100`.
+3. Negative `skip` values are coerced to `0`.
+
+The limit currently applies to the following resources: **hotels**, **customers**, **rooms**, and **reservations**.
+
+_Introduced in vNEXT – see [CHANGELOG](./CHANGELOG.md) for details._

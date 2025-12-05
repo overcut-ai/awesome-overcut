@@ -187,6 +187,17 @@ The Prisma schema is located under `apps/hotel-management-service-server/prisma/
   ```
 
 * Seed data lives in `apps/hotel-management-service-server/scripts/seed.ts`.
+* **Seeding the database**
+
+  Run the standalone seed script whenever you need fresh demo data:
+
+  ```bash
+  cd apps/hotel-management-service-server
+  npm run seed         # executes ts-node scripts/seed.ts
+  ```
+
+  The script now performs all operations inside a `try … finally` block and **awaits `client.$disconnect()`**, ensuring the PostgreSQL connection is cleanly closed even if an error occurs.  
+  If you prefer a single command, `npm run db:init` already applies migrations **and** invokes the seed script in the correct order.
 
 ---
 

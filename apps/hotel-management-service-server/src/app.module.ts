@@ -4,6 +4,7 @@ import { RoomModule } from "./room/room.module";
 import { ReservationModule } from "./reservation/reservation.module";
 import { CustomerModule } from "./customer/customer.module";
 import { HealthModule } from "./health/health.module";
+import { AuthModule } from "./auth/auth.module";
 import { PrismaModule } from "./prisma/prisma.module";
 import { SecretsManagerModule } from "./providers/secrets/secretsManager.module";
 import { ServeStaticModule } from "@nestjs/serve-static";
@@ -15,6 +16,7 @@ import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
 @Module({
   controllers: [],
   imports: [
+    AuthModule,
     HotelModule,
     RoomModule,
     ReservationModule,

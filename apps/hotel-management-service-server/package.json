@@ -45,7 +45,10 @@
     "reflect-metadata": "0.1.13",
     "ts-node": "10.9.2",
     "type-fest": "2.19.0",
-    "validator": "13.11.0"
+    "validator": "13.11.0",
+    "cookie-parser": "^1.4.6",
+    "@nestjs/helmet": "^11.0.1",
+    "helmet": "^7.0.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.1.18",

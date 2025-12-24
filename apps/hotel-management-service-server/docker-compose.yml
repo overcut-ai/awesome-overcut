@@ -7,6 +7,8 @@ services:
         NPM_LOG_LEVEL: notice
     ports:
       - ${PORT}:3000
+    env_file:
+      - .env.local
     environment:
       BCRYPT_SALT: ${BCRYPT_SALT}
       DB_URL: postgres://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME}
@@ -20,6 +22,8 @@ services:
         NPM_LOG_LEVEL: notice
     command: npm run db:init
     working_dir: /app/server
+    env_file:
+      - .env.local
     environment:
       BCRYPT_SALT: ${BCRYPT_SALT}
       DB_URL: postgres://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME}
@@ -30,6 +34,8 @@ services:
     image: postgres:12
     ports:
       - ${DB_PORT}:5432
+    env_file:
+      - .env.local
     environment:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}

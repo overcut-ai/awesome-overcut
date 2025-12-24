@@ -46,6 +46,38 @@ export class SecretsManagerService {
     return value;
   }
 
+  async updateSecrets(updates: SecretsDictionary): Promise<void> {
+    const normalizedEntries = Object.entries(updates).filter(([, value]) => Boolean(value));
+
+    if (normalizedEntries.length === 0) {
+      console.info("[SecretsManagerService] No secret updates provided");
+      return;
+    }
+
+    const normalized = normalizedEntries.reduce((acc, [key, value]) => {
+      acc[key as EnumSecretsNameKey] = value as string;
+      return acc;
+    }, {} as SecretsDictionary);
+
+    if (this.provider === "aws") {
+      await this.applyUpdatesToAws(normalized);
+    } else if (this.provider === "gcp") {
+      await this.applyUpdatesToGcp(normalized);
+    } else {
+      this.applyUpdatesToEnv(normalized);
+    }
+
+    this.remoteSnapshot = {
+      ...(this.remoteSnapshot ?? {}),
+      ...(normalized as Record<string, string>),
+    };
+
+    this.cache = {
+      ...this.cache,
+      ...normalized,
+    };
+  }
+
   private resolveProvider(): SecretsProvider {
     const provider = process.env.SECRETS_MANAGER_PROVIDER?.toLowerCase();
     if (provider === "aws" || provider === "gcp" || provider === "env") {
@@ -107,6 +139,35 @@ export class SecretsManagerService {
     const parsed = JSON.parse(response.SecretString) as Record<string, string>;
     this.remoteSnapshot = parsed;
     return parsed;
+  }
+
+  private applyUpdatesToEnv(updates: SecretsDictionary): void {
+    Object.entries(updates).forEach(([key, value]) => {
+      if (!value) {
+        return;
+      }
+
+      process.env[key] = value;
+      console.info(`[SecretsManagerService] (env) ${key} -> ${value}`);
+    });
+
+    console.info(
+      "[SecretsManagerService] TODO: Persist env provider secret updates to a secure vault."
+    );
+  }
+
+  private async applyUpdatesToAws(updates: SecretsDictionary): Promise<void> {
+    console.info(
+      "[SecretsManagerService] TODO: Push updates to AWS Secrets Manager in a production-safe way.",
+      { keys: Object.keys(updates) }
+    );
+  }
+
+  private async applyUpdatesToGcp(updates: SecretsDictionary): Promise<void> {
+    console.info(
+      "[SecretsManagerService] TODO: Push updates to Google Secret Manager in a production-safe way.",
+      { keys: Object.keys(updates) }
+    );
   }
 
   private async loadGcpSecrets(): Promise<Record<string, string> | null> {

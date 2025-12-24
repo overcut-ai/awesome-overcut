@@ -11,6 +11,12 @@ import { ServeStaticOptionsService } from "./serveStaticOptions.service";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { GraphQLModule } from "@nestjs/graphql";
 import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
+import * as Joi from "joi";
+import {
+  cryptoConfig,
+  databaseConfig,
+  serverConfig,
+} from "./config/app.config";
 
 @Module({
   controllers: [],
@@ -22,7 +28,20 @@ import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
     HealthModule,
     PrismaModule,
     SecretsManagerModule,
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [databaseConfig, cryptoConfig, serverConfig],
+      validationSchema: Joi.object({
+        BCRYPT_SALT: Joi.string().required(),
+        DB_URL: Joi.string().uri().required(),
+        DB_USER: Joi.string().required(),
+        DB_PASSWORD: Joi.string().required(),
+        DB_NAME: Joi.string().required(),
+        DB_PORT: Joi.number().port().required(),
+        PORT: Joi.number().port().required(),
+        COMPOSE_PROJECT_NAME: Joi.string().required(),
+      }),
+    }),
     ServeStaticModule.forRootAsync({
       useClass: ServeStaticOptionsService,
     }),

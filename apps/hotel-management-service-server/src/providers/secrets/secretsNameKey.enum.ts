@@ -1,1 +1,1 @@
-export enum EnumSecretsNameKey {}
+export { EnumSecretsNameKey } from "../../secrets/secrets-name-key.enum";

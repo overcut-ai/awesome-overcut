@@ -3,12 +3,11 @@ import { useLogin, useNotify } from "react-admin";
 import { Button } from "@mui/material";
 import "./login.scss";
 
-const LoginForm = ({ theme }: any) => {
+const LoginForm = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const login = useLogin();
   const notify = useNotify();
-  const BASE_URI = process.env.REACT_APP_SERVER_URL;
   const submit = (e: any) => {
     e.preventDefault();
     login({ username, password }).catch(() =>

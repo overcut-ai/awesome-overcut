@@ -1,13 +1,11 @@
-import * as React from "react";
-import { useState } from "react";
-import { useLogin, useNotify, Notification, defaultTheme } from "react-admin";
+import { Notification, defaultTheme } from "react-admin";
 import { Button, createTheme, ThemeProvider } from "@mui/material";
 import "./login.scss";
 import LoginForm from "./LoginForm";
 
 const CLASS_NAME = "login-page";
 
-const Login = ({ theme }: any) => {
+const Login = () => {
   const BASE_URI = process.env.REACT_APP_SERVER_URL;
 
   return (

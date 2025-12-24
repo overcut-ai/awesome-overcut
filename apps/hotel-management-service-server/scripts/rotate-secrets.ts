@@ -15,7 +15,7 @@ export function generateRandomString(length: number): string {
     .slice(0, length);
 }
 
-async function main(): Promise<void> {
+export async function rotateSecretsCli(): Promise<void> {
   const secretsManager = new SecretsManagerService();
 
   const updates = {
@@ -42,7 +42,7 @@ async function main(): Promise<void> {
 }
 
 if (require.main === module) {
-  main().catch((error) => {
+  rotateSecretsCli().catch((error) => {
     console.error("[rotate-secrets] Unexpected failure", error);
     process.exit(1);
   });

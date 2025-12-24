@@ -5,6 +5,7 @@ import { ConfigService } from "@nestjs/config";
 import { HttpExceptionFilter } from "./filters/HttpExceptions.filter";
 import { AppModule } from "./app.module";
 import { connectMicroservices } from "./connectMicroservices";
+import { bootstrapSecrets } from "./bootstrapSecrets";
 import {
   swaggerPath,
   swaggerDocumentOptions,
@@ -12,6 +13,7 @@ import {
 } from "./swagger";
 
 async function main() {
+  await bootstrapSecrets();
   const app = await NestFactory.create(AppModule, { cors: true });
   const configService = app.get(ConfigService);
   const port = configService.getOrThrow<number>("server.port", { infer: true });

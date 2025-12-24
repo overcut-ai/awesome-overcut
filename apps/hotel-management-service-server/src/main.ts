@@ -1,6 +1,7 @@
 import { ValidationPipe } from "@nestjs/common";
 import { HttpAdapterHost, NestFactory } from "@nestjs/core";
 import { OpenAPIObject, SwaggerModule } from "@nestjs/swagger";
+import { ConfigService } from "@nestjs/config";
 import { HttpExceptionFilter } from "./filters/HttpExceptions.filter";
 import { AppModule } from "./app.module";
 import { connectMicroservices } from "./connectMicroservices";
@@ -10,10 +11,10 @@ import {
   swaggerSetupOptions,
 } from "./swagger";
 
-const { PORT = 3000 } = process.env;
-
 async function main() {
   const app = await NestFactory.create(AppModule, { cors: true });
+  const configService = app.get(ConfigService);
+  const port = configService.getOrThrow<number>("server.port", { infer: true });
 
   app.setGlobalPrefix("api");
   app.useGlobalPipes(
@@ -45,7 +46,7 @@ async function main() {
   const { httpAdapter } = app.get(HttpAdapterHost);
   app.useGlobalFilters(new HttpExceptionFilter(httpAdapter));
 
-  void app.listen(PORT);
+  void app.listen(port);
 
   return app;
 }

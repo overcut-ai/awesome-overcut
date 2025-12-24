@@ -29,13 +29,23 @@ import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
     GraphQLModule.forRootAsync<ApolloDriverConfig>({
       driver: ApolloDriver,
       useFactory: (configService: ConfigService) => {
-        const playground = configService.get("GRAPHQL_PLAYGROUND");
-        const introspection = configService.get("GRAPHQL_INTROSPECTION");
+        const parseBooleanEnv = (value?: string) => value?.toLowerCase() === "true";
+
+        const nodeEnv = configService.get<string>("NODE_ENV");
+        const isProduction = nodeEnv?.toLowerCase() === "production";
+        const isPlaygroundRequested = parseBooleanEnv(
+          configService.get<string>("GRAPHQL_PLAYGROUND")
+        );
+        const isIntrospectionRequested = parseBooleanEnv(
+          configService.get<string>("GRAPHQL_INTROSPECTION")
+        );
+
         return {
           autoSchemaFile: "schema.graphql",
           sortSchema: true,
-          playground,
-          introspection: playground || introspection,
+          playground: !isProduction && isPlaygroundRequested,
+          introspection:
+            !isProduction && (isPlaygroundRequested || isIntrospectionRequested),
         };
       },
       inject: [ConfigService],

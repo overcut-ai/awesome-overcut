@@ -29,14 +29,16 @@ import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
     GraphQLModule.forRootAsync<ApolloDriverConfig>({
       driver: ApolloDriver,
       useFactory: (configService: ConfigService) => {
+        const parseBooleanEnv = (value?: string) => value?.toLowerCase() === "true";
+
         const nodeEnv = configService.get<string>("NODE_ENV");
         const isProduction = nodeEnv?.toLowerCase() === "production";
-        const isPlaygroundRequested = (
-          configService.get<string>("GRAPHQL_PLAYGROUND") ?? "false"
-        ).toLowerCase() === "true";
-        const isIntrospectionRequested = (
-          configService.get<string>("GRAPHQL_INTROSPECTION") ?? "false"
-        ).toLowerCase() === "true";
+        const isPlaygroundRequested = parseBooleanEnv(
+          configService.get<string>("GRAPHQL_PLAYGROUND")
+        );
+        const isIntrospectionRequested = parseBooleanEnv(
+          configService.get<string>("GRAPHQL_INTROSPECTION")
+        );
 
         return {
           autoSchemaFile: "schema.graphql",

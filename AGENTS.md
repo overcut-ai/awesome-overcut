@@ -13,6 +13,7 @@ This document orients automation-focused contributors to the `overcut-ai/awesome
   - `migration/` – Operational notes such as `migration-architecture-analysis.md` describing current architecture and risks.
 - **Technologies**: Node.js 18 · NestJS 10 · Prisma 5 · PostgreSQL 12 · GraphQL/Apollo · React 18 · React-Admin 5 · Vite 4 · TypeScript 5 · Docker Compose · Jest · ESLint · Prettier · Sass.
 - **Workflow Emphasis**: Docker-first. The server ships `docker-compose.yml` to spin up API + Postgres + migration job (`npm run compose:up`). Amplication scaffolding provides generated base classes extended by hand-written files.
+- **Current Limitation**: Backend authentication/login mutations have not been implemented yet, so the React-Admin UI cannot successfully log in until the API gains those resolvers and accompanying seeds.
 
 ---
 
@@ -60,8 +61,9 @@ awesome-overcut/
 
 - **Modular Design**: `AppModule` wires feature modules, Prisma, ConfigModule, ServeStatic, and GraphQL. Each domain module (hotel, room, reservation, customer, health) extends an Amplication-generated `*.module.base.ts`.
 - **API Surfaces**: Controllers expose REST routes under `/api/<resource>`, while resolvers expose GraphQL types/queries/mutations at `/graphql`. Swagger docs live at `http://localhost:3000/api`; GraphQL Playground is available at `http://localhost:3000/graphql` once the server is running.
-- **Generated Base Layer**: Files under `src/<entity>/base/` define DTOs, resolvers, controllers, and Prisma argument types. Custom logic should live in sibling files like `hotel.service.ts`, keeping `base/` pristine so Amplication regenerations remain conflict-free.
+- **Generated Base Layer**: Files under `src/<entity>/base/` define DTOs, resolvers, controllers, and Prisma argument types. Custom logic must live in sibling files like `hotel.service.ts`, keeping every `base/` directory pristine so Amplication regenerations remain conflict-free.
 - **Database Access**: Prisma service wraps `@prisma/client` and is configured through `.env` (`DB_URL`). Filtering helpers (e.g., JSON filters) reside in `src/util/` and are reused across entities.
+- **Authentication Status**: There is no `login` mutation or seeded admin user yet (`scripts/customSeed.ts` is intentionally empty), so plan to implement auth resolvers + seeds before relying on the React-Admin login screen.
 - **Error Handling & Validation**: Global `ValidationPipe` ensures DTO validation; `HttpExceptionFilter` translates Prisma errors (e.g., P2002) to HTTP responses.
 
 ### Frontend (React-Admin + Apollo)
@@ -87,13 +89,13 @@ awesome-overcut/
 2. **Generated Code Discipline**
    - Never modify files under any `base/` directory. Customizations belong in the non-base counterparts (e.g., `hotel.service.ts` extends `HotelServiceBase`). Regeneration from Amplication overwrites base files.
 3. **Environment Safety**
-   - Keep `.env` values development-safe. The Compose stack targets local Dockerized PostgreSQL; avoid pointing `DB_URL` at production while running migration scripts such as `npm run db:init` or `npx prisma migrate dev`.
+   - Keep `.env` values development-safe. The Compose stack targets local Dockerized PostgreSQL; avoid pointing `DB_URL` at production while running migration scripts such as `npm run db:init` or `npx prisma migrate dev`. Set required secrets like `BCRYPT_SALT` before running `npm run db:init`, `npm run seed`, or any Compose workflow—the seed script aborts if that variable is missing.
 4. **Database Changes**
    - Use Prisma migrations (`npx prisma migrate dev --name <name>`) and regenerate the client (`npm run prisma:generate`). Seeding uses `npm run seed` or the composite `npm run db:init`.
 5. **Docker & Containerization**
    - Prefer the provided Dockerfiles/Compose files for smoke tests. `npm run package:container` exists in both apps to build production images.
 6. **Testing Expectations**
-   - Server changes must keep `npm run test` green. Admin currently lacks automated tests—consider manual verification or add tests under `src/setupTests.ts` if needed.
+   - Server changes must keep `npm run test` green even though coverage currently consists only of the health service spec (`apps/hotel-management-service-server/src/tests/health/health.service.spec.ts`). The admin app lacks automated tests, so plan for manual verification or add coverage under `src/setupTests.ts` as you extend functionality.
 
 ---
 
@@ -118,10 +120,13 @@ npm run compose:up   # starts API + PostgreSQL + migration job
 npm run compose:down  # removes containers and volumes
 ```
 
+Set database secrets such as `DB_URL` and `BCRYPT_SALT` in `.env` (or `.env.local`) before running Compose—`npm run db:init`/`npm run seed` execute as part of the stack and will fail fast if `BCRYPT_SALT` is undefined.
+
 ### Run Apps Individually on the Host
 
 ```bash
 # ensure PostgreSQL is running locally or via docker:dev
+# make sure BCRYPT_SALT is exported/in your .env before seeding
 cd apps/hotel-management-service-server
 npm run prisma:generate
 npm run db:init        # migrate + seed
@@ -132,7 +137,19 @@ cd apps/hotel-management-service-admin
 npm run start          # Vite dev server at http://localhost:3001
 ```
 
-GraphQL Playground lives at `http://localhost:3000/graphql`, Swagger UI at `http://localhost:3000/api`, and the Admin UI expects the API at `http://localhost:3000` (change `VITE_REACT_APP_SERVER_URL` if needed). Default dev credentials per README: `admin` / `admin`.
+GraphQL Playground lives at `http://localhost:3000/graphql`, Swagger UI at `http://localhost:3000/api`, and the Admin UI expects the API at `http://localhost:3000` (change `VITE_REACT_APP_SERVER_URL` if needed). There are no working default credentials because the backend login mutation has not been implemented yet, so the admin login screen will continue to fail until those resolvers and seeds are added.
+
+### Create Temporary Admin/Test Users (until auth ships)
+
+Until the backend exposes a formal auth flow, create any test/admin records manually so you can verify UI behavior once you add the requisite Prisma models and resolvers.
+
+```bash
+cd apps/hotel-management-service-server
+npx prisma studio               # edit tables directly once a User model exists
+node -e "console.log(require('bcrypt').hashSync('your-password', process.env.BCRYPT_SALT))"  # reuse this hash when inserting
+```
+
+Alternatively, add a throwaway mutation/resolver for local development, then delete it after real auth endpoints land. Update `scripts/customSeed.ts` once the data shape is finalized so future contributors no longer need to perform this manual bootstrap.
 
 ### Database Migrations & Seeding
 
@@ -140,6 +157,7 @@ GraphQL Playground lives at `http://localhost:3000/graphql`, Swagger UI at `http
 cd apps/hotel-management-service-server
 npx prisma migrate dev --name <migration_name>
 npm run prisma:generate
+# requires DB_URL and BCRYPT_SALT in your environment
 npm run seed                    # optional custom seed
 npm run db:init                 # wraps migrate + deploy + seed
 ```
@@ -172,6 +190,7 @@ cd ../hotel-management-service-admin && npm run package:container
 | --- | --- | --- |
 | Architecture overview | `migration/migration-architecture-analysis.md` | Summarizes stack decisions, runtime context, and migration risks (e.g., auth gaps). |
 | NestJS domain pattern | `apps/hotel-management-service-server/src/hotel/` | Shows how controllers/resolvers/services extend `base/` classes and wire into modules. |
+| Extending generated services | `apps/hotel-management-service-server/src/hotel/hotel.service.ts` | Illustrates overriding `HotelServiceBase` in a sibling file so `base/` directories remain untouched. |
 | React-Admin resource pattern | `apps/hotel-management-service-admin/src/customer/` | Demonstrates the standard List/Create/Edit/Show components Amplication generates. |
 | Shared backend utilities | `apps/hotel-management-service-server/src/util/` | Contains reusable Prisma filter helpers referenced across entity modules. |
 | Health checks & tests | `apps/hotel-management-service-server/src/tests/health/` | Minimal Jest coverage illustrating how to test services extending base classes. |

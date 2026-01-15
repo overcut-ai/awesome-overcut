@@ -2,6 +2,8 @@
 
 This document orients automation-focused contributors to the `overcut-ai/awesome-overcut` monorepo. It summarizes how the NestJS API, React-Admin client, and migration notes fit together, which scripts are safe to run, and where to find canonical examples.
 
+> **Automation reminder**: This workflow only updates `AGENTS.md`; do not commit these changes.
+
 ---
 
 ## 1. Project Overview

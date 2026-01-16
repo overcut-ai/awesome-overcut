@@ -48,6 +48,7 @@ awesome-overcut/
 
 - `src/App.tsx` registers React-Admin resources, pointing to per-resource folders (`src/hotel/`, `src/room/`, `src/reservation/`, `src/customer/`). Each folder hosts list/create/edit/show components.
 - `src/auth-provider/` implements JWT login via Apollo; `src/data-provider/` wraps the GraphQL endpoint; `src/util/` and `src/theme/` provide shared UI helpers.
+- `src/Components/Pagination.tsx` houses the reusable React-Admin pagination helper that list views import to keep paging controls consistent.
 - Styling resides in `App.scss`, `login.scss`, and component-level SCSS modules.
 - Configuration occurs through `.env` variables consumed by Vite (e.g., `VITE_REACT_APP_SERVER_URL` defaults to `http://localhost:3000`).
 
@@ -74,6 +75,7 @@ awesome-overcut/
 - **Auth & Data Providers**: `src/auth-provider/ra-auth-jwt.ts` issues the `login` mutation against the API and stores tokens in LocalStorage, while `src/data-provider/graphqlDataProvider.ts` attaches the bearer token to GraphQL requests via Apollo Client.
 - **Environment Configuration**: Vite exposes env vars prefixed with `VITE_`. Adjust `VITE_REACT_APP_SERVER_URL` when pointing to non-default backends.
 - **Styling & Theming**: Shared SCSS and theme tokens live in `src/theme` and `src/Components/`. Follow existing file naming (PascalCase for components, kebab-case SCSS).
+- **Shared Pagination**: `src/Components/Pagination.tsx` exports the standardized pagination component used across list resources; new list views should import this helper instead of rolling custom pagination.
 
 ### Cross-Cutting Practices
 
@@ -194,6 +196,7 @@ cd ../hotel-management-service-admin && npm run package:container
 | NestJS domain pattern | `apps/hotel-management-service-server/src/hotel/` | Shows how controllers/resolvers/services extend `base/` classes and wire into modules. |
 | Extending generated services | `apps/hotel-management-service-server/src/hotel/hotel.service.ts` | Illustrates overriding `HotelServiceBase` in a sibling file so `base/` directories remain untouched. |
 | React-Admin resource pattern | `apps/hotel-management-service-admin/src/customer/` | Demonstrates the standard List/Create/Edit/Show components Amplication generates. |
+| Shared pagination helper | `apps/hotel-management-service-admin/src/Components/Pagination.tsx` | Shared React-Admin pagination helper reused by list resources. |
 | Shared backend utilities | `apps/hotel-management-service-server/src/util/` | Contains reusable Prisma filter helpers referenced across entity modules. |
 | Health checks & tests | `apps/hotel-management-service-server/src/tests/health/` | Minimal Jest coverage illustrating how to test services extending base classes. |
 | Auth/Data providers | `apps/hotel-management-service-admin/src/auth-provider/` & `src/data-provider/` | Illustrate how JWT auth and Apollo data access are configured. |

@@ -13,7 +13,7 @@ This document orients automation-focused contributors to the `overcut-ai/awesome
   - `apps/hotel-management-service-server/` – NestJS 10 service exposing REST (`/api`) and GraphQL (`/graphql`) endpoints, backed by Prisma 5 + PostgreSQL.
   - `apps/hotel-management-service-admin/` – Vite-powered React 18 admin console that consumes the server's GraphQL API through `ra-data-graphql-amplication`.
   - `migration/` – Operational notes such as `migration-architecture-analysis.md` describing current architecture and risks.
-- **Technologies**: Node.js 18 · NestJS 10 · Prisma 5 · PostgreSQL 12 · GraphQL/Apollo · React 18 · React-Admin 5 · Vite 4 · TypeScript 5 · Docker Compose · Jest · ESLint · Prettier · Sass.
+- **Technologies**: Node.js 18 · NestJS 10 · Prisma 5 · PostgreSQL 12 · GraphQL/Apollo · React 18 · React-Admin 5 · Vite 4 · TypeScript 5 · Docker Compose · Jest · ESLint · Prettier · Sass · npm-run-all.
 - **Workflow Emphasis**: Docker-first. The server ships `docker-compose.yml` to spin up API + Postgres + migration job (`npm run compose:up`). Amplication scaffolding provides generated base classes extended by hand-written files.
 - **Current Limitation**: Backend authentication/login mutations have not been implemented yet, so the React-Admin UI cannot successfully log in until the API gains those resolvers and accompanying seeds.
 
@@ -138,7 +138,7 @@ npm run start          # or npm run start:watch for hot reload
 
 # in a second terminal for the admin UI
 cd apps/hotel-management-service-admin
-npm run start          # Vite dev server at http://localhost:3001
+npm run start          # Vite dev server (defaults to http://localhost:5173 unless you override with --port)
 ```
 
 GraphQL Playground lives at `http://localhost:3000/graphql`, Swagger UI at `http://localhost:3000/api`, and the Admin UI expects the API at `http://localhost:3000` (change `VITE_REACT_APP_SERVER_URL` if needed). There are no working default credentials because the backend login mutation has not been implemented yet, so the admin login screen will continue to fail until those resolvers and seeds are added.

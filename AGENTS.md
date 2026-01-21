@@ -80,7 +80,8 @@ awesome-overcut/
 ### Cross-Cutting Practices
 
 - **Environment Files**: Copy `.env` templates (e.g., `cp .env .env.local`) before editing so defaults stay intact.
-- **Docker Workflow**: Use `npm run compose:up` / `npm run compose:down` inside the server app to bring up/down API + PostgreSQL + migration job consistently.
+- **Docker Workflow**: Use `npm run compose:up` / `npm run compose:down` inside the server app to bring up/down API + PostgreSQL + the migration job. When you only need a disposable PostgreSQL instance while running Nest locally, run `npm run docker:dev` (backs `docker-compose.dev.yml`) to launch just the database container.
+- **Database Bootstrap vs. Ongoing Work**: `npm run db:init` is a bootstrap-only helper that chains `db:migrate-save`, `db:migrate-up`, and `seed` to create the initial migration + seed data. After the first run, execute `npm run db:migrate-up` and `npm run seed` separately whenever you need to apply migrations or reseed.
 - **Testing**: Jest configuration lives in the server `package.json`; tests currently cover health checks under `src/tests/health/`.
 
 ---
@@ -126,6 +127,8 @@ npm run compose:down  # removes containers and volumes
 
 Set database secrets such as `DB_URL` and `BCRYPT_SALT` in `.env` (or `.env.local`) before running Compose—`npm run db:init`/`npm run seed` execute as part of the stack and will fail fast if `BCRYPT_SALT` is undefined.
 
+> Need only PostgreSQL while running the NestJS server on your host? Run `npm run docker:dev` inside `apps/hotel-management-service-server` to start the lightweight `docker-compose.dev.yml` stack (database only), then stop it with `docker compose -f docker-compose.dev.yml down` when you are done.
+
 ### Run Apps Individually on the Host
 
 ```bash
@@ -133,13 +136,15 @@ Set database secrets such as `DB_URL` and `BCRYPT_SALT` in `.env` (or `.env.loca
 # make sure BCRYPT_SALT is exported/in your .env before seeding
 cd apps/hotel-management-service-server
 npm run prisma:generate
-npm run db:init        # migrate + seed
+npm run db:init        # one-time bootstrap: creates the initial migration + seed data
 npm run start          # or npm run start:watch for hot reload
 
 # in a second terminal for the admin UI
 cd apps/hotel-management-service-admin
 npm run start          # Vite dev server (defaults to http://localhost:5173 unless you override with --port)
 ```
+
+> After the initial bootstrap, favor `npm run db:migrate-up` (deploy) followed by `npm run seed` for daily development instead of rerunning `npm run db:init`.
 
 GraphQL Playground lives at `http://localhost:3000/graphql`, Swagger UI at `http://localhost:3000/api`, and the Admin UI expects the API at `http://localhost:3000` (change `VITE_REACT_APP_SERVER_URL` if needed). There are no working default credentials because the backend login mutation has not been implemented yet, so the admin login screen will continue to fail until those resolvers and seeds are added.
 
@@ -163,7 +168,8 @@ npx prisma migrate dev --name <migration_name>
 npm run prisma:generate
 # requires DB_URL and BCRYPT_SALT in your environment
 npm run seed                    # optional custom seed
-npm run db:init                 # wraps migrate + deploy + seed
+npm run db:migrate-up           # deploys migrations without reseeding
+npm run db:init                 # bootstrap-only: creates the initial migration + seed in one pass
 ```
 
 ### Testing & Quality Checks
@@ -173,9 +179,10 @@ npm run db:init                 # wraps migrate + deploy + seed
 cd apps/hotel-management-service-server
 npm run test
 
-# admin linting & type checks
+# admin linting, formatting & type checks
 cd ../hotel-management-service-admin
 npm run lint
+npm run format
 npm run type-check
 ```
 

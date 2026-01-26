@@ -46,7 +46,8 @@ awesome-overcut/
 
 ### Admin Layout (`apps/hotel-management-service-admin/`)
 
-- `src/App.tsx` registers React-Admin resources, pointing to per-resource folders (`src/hotel/`, `src/room/`, `src/reservation/`, `src/customer/`). Each folder hosts list/create/edit/show components.
+- `src/App.tsx` registers React-Admin resources, pointing to per-resource folders (`src/hotel/`, `src/room/`, `src/reservation/`, `src/customer/`, `src/user/`). Each folder hosts list/create/edit/show components.
+- Generated GraphQL types for each entity live under `src/api/<entity>/` and are consumed by the React-Admin components/data provider.
 - `src/auth-provider/` implements JWT login via Apollo; `src/data-provider/graphqlDataProvider.ts` wraps the GraphQL endpoint with Apollo Client; `src/util/` and `src/theme/` provide shared UI helpers.
 - `src/Components/Pagination.tsx` houses the reusable React-Admin pagination helper that list views import to keep paging controls consistent.
 - Styling resides in `App.scss`, `login.scss`, and component-level SCSS modules.

@@ -73,6 +73,7 @@ awesome-overcut/
 ### Frontend (React-Admin + Apollo)
 
 - **Resource Registration**: `App.tsx` composes `<Admin>` with resources for hotel, room, reservation, and customer, each importing their view components from `src/<resource>/`.
+- **Generated GraphQL API artifacts**: Files under `apps/hotel-management-service-admin/src/api/<entity>/` are Amplication-generated documents/types tied to the backend schema—never edit them manually; regenerate via Amplication and keep custom logic inside the React components instead.
 - **Auth & Data Providers**: `src/auth-provider/ra-auth-jwt.ts` issues the `login` mutation against the API and stores tokens in LocalStorage, while `src/data-provider/graphqlDataProvider.ts` attaches the bearer token to GraphQL requests via Apollo Client.
 - **Environment Configuration**: Vite exposes env vars prefixed with `VITE_`. Adjust `VITE_REACT_APP_SERVER_URL` when pointing to non-default backends.
 - **Styling & Theming**: Shared SCSS and theme tokens live in `src/theme` and `src/Components/`. Follow existing file naming (PascalCase for components, kebab-case SCSS).
@@ -205,7 +206,9 @@ cd ../hotel-management-service-admin && npm run package:container
 | Extending generated services | `apps/hotel-management-service-server/src/hotel/hotel.service.ts` | Illustrates overriding `HotelServiceBase` in a sibling file so `base/` directories remain untouched. |
 | Prisma data model | `apps/hotel-management-service-server/prisma/schema.prisma` | Source of truth for entity fields/relations consumed by Prisma, GraphQL, and React-Admin. |
 | Seeding workflow | `apps/hotel-management-service-server/scripts/seed.ts` | Demonstrates how seeds leverage env secrets (e.g., `BCRYPT_SALT`) and when to extend via `scripts/customSeed.ts`. |
+| Custom seed extension point | `apps/hotel-management-service-server/scripts/customSeed.ts` | Hook for injecting project-specific seed logic that runs alongside `npm run seed` without touching the generated script. |
 | React-Admin resource pattern | `apps/hotel-management-service-admin/src/customer/` | Demonstrates the standard List/Create/Edit/Show components Amplication generates. |
+| Admin generated API layer | `apps/hotel-management-service-admin/src/api/` | Amplication-generated GraphQL documents/types for each resource—reference this folder when regenerating and avoid manual edits. |
 | Shared pagination helper | `apps/hotel-management-service-admin/src/Components/Pagination.tsx` | Shared React-Admin pagination helper reused by list resources. |
 | Shared backend utilities | `apps/hotel-management-service-server/src/util/` | Contains reusable Prisma filter helpers referenced across entity modules. |
 | Health checks & tests | `apps/hotel-management-service-server/src/tests/health/health.service.spec.ts` | Minimal Jest coverage illustrating how to test services extending base classes. |

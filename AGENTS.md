@@ -33,7 +33,7 @@ awesome-overcut/
 └── LICENSE                                # Apache-2.0
 ```
 
-- Each app is an isolated npm project with its own `package.json`, Dockerfile, `.env` template, and scripts noted in the root README.
+- Each app is an isolated npm project with its own `package.json`, Dockerfile, `.env` template, and scripts noted in the root README (plus app-specific READMEs where present so Docker/env guidance stays close to the code).
 - Asset files (`overcut-logo.png`, `overcut-loading.gif`) support branding in docs/UI.
 
 ### Server Layout (`apps/hotel-management-service-server/`)
@@ -213,6 +213,7 @@ cd ../hotel-management-service-admin && npm run package:container
 | Shared backend utilities | `apps/hotel-management-service-server/src/util/` | Contains reusable Prisma filter helpers referenced across entity modules. |
 | Health checks & tests | `apps/hotel-management-service-server/src/tests/health/health.service.spec.ts` | Minimal Jest coverage illustrating how to test services extending base classes. |
 | Auth/Data providers | `apps/hotel-management-service-admin/src/auth-provider/` & `apps/hotel-management-service-admin/src/data-provider/graphqlDataProvider.ts` | Show how JWT auth and Apollo data access are configured for the admin client. |
+| Docker Compose config | `apps/hotel-management-service-server/docker-compose.yml` | Canonical Docker-first workflow definition combining API, PostgreSQL, and migration/seeding jobs. |
 
 ---
 

@@ -15,7 +15,7 @@ This document orients automation-focused contributors to the `overcut-ai/awesome
   - `migration/` – Operational notes such as `migration-architecture-analysis.md` describing current architecture and risks.
 - **Technologies**: Node.js 18 · NestJS 10 · Prisma 5 · PostgreSQL 12 · GraphQL/Apollo · React 18 · React-Admin 5 · Vite 4 · TypeScript 5 · Docker Compose · Jest · ESLint · Prettier · Sass · npm-run-all.
 - **Workflow Emphasis**: Docker-first. The server ships `docker-compose.yml` to spin up API + Postgres + migration job (`npm run compose:up`). Amplication scaffolding provides generated base classes extended by hand-written files.
-- **Current Limitation**: Backend authentication/login mutations have not been implemented yet, so the React-Admin UI cannot successfully log in until the API gains those resolvers and accompanying seeds.
+- **Authentication Gap**: The README/Swagger banner still mention default `admin/admin` credentials, but the Prisma schema (`apps/hotel-management-service-server/prisma/schema.prisma`) defines only Hotel/Room/Reservation/Customer models and the backend exposes no `login` resolver, so the React-Admin login screen cannot succeed yet.
 
 ---
 
@@ -46,10 +46,11 @@ awesome-overcut/
 
 ### Admin Layout (`apps/hotel-management-service-admin/`)
 
-- `src/App.tsx` registers React-Admin resources, pointing to per-resource folders (`src/hotel/`, `src/room/`, `src/reservation/`, `src/customer/`, `src/user/`). Each folder hosts list/create/edit/show components.
+- `src/App.tsx` registers React-Admin resources, pointing to per-resource folders (`src/hotel/`, `src/room/`, `src/reservation/`, `src/customer/`). Each folder hosts list/create/edit/show components generated from the backend schema.
 - Generated GraphQL types for each entity live under `src/api/<entity>/` and are consumed by the React-Admin components/data provider.
-- `src/auth-provider/` implements JWT login via Apollo; `src/data-provider/graphqlDataProvider.ts` wraps the GraphQL endpoint with Apollo Client; `src/util/` and `src/theme/` provide shared UI helpers.
+- `src/auth-provider/` implements a JWT login mutation via Apollo even though the backend currently lacks that resolver. Keep the provider in place but expect authentication to fail until the API is extended; `src/data-provider/graphqlDataProvider.ts` wraps the GraphQL endpoint with Apollo Client; `src/util/` and `src/theme/` provide shared UI helpers.
 - `src/Components/Pagination.tsx` houses the reusable React-Admin pagination helper that list views import to keep paging controls consistent.
+- `src/user/` only defines role metadata for future ACL hooks; there is no user CRUD UI until the backend exposes a User model.
 - Styling resides in `App.scss`, `login.scss`, and component-level SCSS modules.
 - Configuration occurs through `.env` variables consumed by Vite (e.g., `VITE_REACT_APP_SERVER_URL` defaults to `http://localhost:3000`).
 
@@ -67,7 +68,7 @@ awesome-overcut/
 - **API Surfaces**: Controllers expose REST routes under `/api/<resource>`, while resolvers expose GraphQL types/queries/mutations at `/graphql`. Swagger docs live at `http://localhost:3000/api`; GraphQL Playground is available at `http://localhost:3000/graphql` once the server is running.
 - **Generated Base Layer**: Files under `src/<entity>/base/` define DTOs, resolvers, controllers, and Prisma argument types. Custom logic must live in sibling files like `hotel.service.ts`, keeping every `base/` directory pristine so Amplication regenerations remain conflict-free.
 - **Database Access**: Prisma service wraps `@prisma/client` and is configured through `.env` (`DB_URL`). Filtering helpers (e.g., JSON filters) reside in `src/util/` and are reused across entities.
-- **Authentication Status**: There is no `login` mutation or seeded admin user yet (`scripts/customSeed.ts` is intentionally empty), so plan to implement auth resolvers + seeds before relying on the React-Admin login screen.
+- **Authentication Status**: There is no `login` mutation or seeded admin user yet (`scripts/customSeed.ts` is intentionally empty, `src` lacks an `auth` module, and `prisma/schema.prisma` defines only Hotel/Room/Reservation/Customer). Plan to implement auth resolvers + seeds before relying on the React-Admin login screen.
 - **Error Handling & Validation**: Global `ValidationPipe` ensures DTO validation; `HttpExceptionFilter` translates Prisma errors (e.g., P2002) to HTTP responses.
 
 ### Frontend (React-Admin + Apollo)

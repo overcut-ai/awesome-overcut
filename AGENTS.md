@@ -15,7 +15,6 @@ This document orients automation-focused contributors to the `overcut-ai/awesome
   - `migration/` – Operational notes such as `migration-architecture-analysis.md` describing current architecture and risks.
 - **Technologies**: Node.js 18 · NestJS 10 · Prisma 5 · PostgreSQL 12 · GraphQL/Apollo · React 18 · React-Admin 5 · Vite 4 · TypeScript 5 · Docker Compose · Jest · ESLint · Prettier · Sass · npm-run-all.
 - **Workflow Emphasis**: Docker-first. The server ships `docker-compose.yml` to spin up API + Postgres + migration job (`npm run compose:up`). Amplication scaffolding provides generated base classes extended by hand-written files.
-- **Authentication Gap**: The README/Swagger banner still mention default `admin/admin` credentials, but the Prisma schema (`apps/hotel-management-service-server/prisma/schema.prisma`) defines only Hotel/Room/Reservation/Customer models and the backend exposes no `login` resolver, so the React-Admin login screen cannot succeed yet.
 
 ---
 

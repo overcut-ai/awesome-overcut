@@ -13,6 +13,7 @@ model Hotel {
   description String?
   id          String   @id @default(cuid())
   name        String?
+  phone       String?
   rooms       Room[]
   updatedAt   DateTime @updatedAt
 }

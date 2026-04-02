@@ -18,6 +18,7 @@ export const HotelEdit = (props: EditProps): React.ReactElement => {
         <TextInput label="address" source="address" />
         <TextInput label="description" multiline source="description" />
         <TextInput label="name" source="name" />
+        <TextInput label="Phone" source="phone" />
         <ReferenceArrayInput source="rooms" reference="Room">
           <SelectArrayInput
             optionText={RoomTitle}

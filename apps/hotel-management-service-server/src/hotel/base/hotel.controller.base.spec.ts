@@ -23,6 +23,7 @@ const CREATE_INPUT = {
   description: "exampleDescription",
   id: "exampleId",
   name: "exampleName",
+  phone: "examplePhone",
   updatedAt: new Date(),
 };
 const CREATE_RESULT = {
@@ -31,6 +32,7 @@ const CREATE_RESULT = {
   description: "exampleDescription",
   id: "exampleId",
   name: "exampleName",
+  phone: "examplePhone",
   updatedAt: new Date(),
 };
 const FIND_MANY_RESULT = [
@@ -40,6 +42,7 @@ const FIND_MANY_RESULT = [
     description: "exampleDescription",
     id: "exampleId",
     name: "exampleName",
+    phone: "examplePhone",
     updatedAt: new Date(),
   },
 ];
@@ -49,6 +52,7 @@ const FIND_ONE_RESULT = {
   description: "exampleDescription",
   id: "exampleId",
   name: "exampleName",
+  phone: "examplePhone",
   updatedAt: new Date(),
 };
 

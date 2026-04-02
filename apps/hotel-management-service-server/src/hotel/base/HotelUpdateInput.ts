@@ -60,6 +60,18 @@ class HotelUpdateInput {
 
   @ApiProperty({
     required: false,
+    type: String,
+  })
+  @IsString()
+  @MaxLength(1000)
+  @IsOptional()
+  @Field(() => String, {
+    nullable: true,
+  })
+  phone?: string | null;
+
+  @ApiProperty({
+    required: false,
     type: () => RoomUpdateManyWithoutHotelsInput,
   })
   @ValidateNested()

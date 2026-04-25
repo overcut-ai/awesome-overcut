@@ -32,6 +32,18 @@ Configuration for the client component can be provided through the use of enviro
 
 After configuration of the client the next step would be to run the application. Before running the client side of the component, make sure that the different pre-requisites are met - i.e., npm, docker. Make sure that the server-side of the application is running.
 
+## Repository verification note
+
+For synthetic triage issue #424, the admin app shell was reviewed to confirm whether a custom sidebar collapse implementation exists in this repository. The verification found that `src/App.tsx` uses the standard `react-admin` `<Admin />` setup with no custom layout, sidebar controller, or collapse logic, and no repo-local evidence was found for the reported application-wide shrink behavior.
+
+## Phase 2 RCA outcome note
+
+Phase 2 intentionally applies a no-op outcome for synthetic triage issue #424. Per the RCA, no functional application, sidebar, layout, server, or admin behavior changes are required because no matching repo-local implementation exists for the reported bug.
+
+## Phase 3 PR scope note
+
+Phase 3 keeps the pull request scope explicitly limited to documenting the RCA-aligned outcome for synthetic triage issue #424: no product implementation is required. This PR intentionally avoids unrelated UI hardening, layout refactors, or sidebar customization so the functional result remains a deliberate no-op.
+
 ```sh
 # installation of the dependencies
 $ npm install

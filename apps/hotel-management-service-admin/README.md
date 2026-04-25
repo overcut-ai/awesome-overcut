@@ -40,6 +40,10 @@ For synthetic triage issue #424, the admin app shell was reviewed to confirm whe
 
 Phase 2 intentionally applies a no-op outcome for synthetic triage issue #424. Per the RCA, no functional application, sidebar, layout, server, or admin behavior changes are required because no matching repo-local implementation exists for the reported bug.
 
+## Phase 3 PR scope note
+
+Phase 3 keeps the pull request scope explicitly limited to documenting the RCA-aligned outcome for synthetic triage issue #424: no product implementation is required. This PR intentionally avoids unrelated UI hardening, layout refactors, or sidebar customization so the functional result remains a deliberate no-op.
+
 ```sh
 # installation of the dependencies
 $ npm install

@@ -14,6 +14,10 @@ const SaveShortcutFormInner = (
         return;
       }
 
+      if (!saveContext.save) {
+        return;
+      }
+
       const target = event.target;
       if (!(target instanceof Node)) {
         return;

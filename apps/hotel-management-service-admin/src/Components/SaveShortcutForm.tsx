@@ -24,6 +24,8 @@ const SaveShortcutFormInner = (
       }
 
       event.preventDefault();
+      // Reuse React-Admin's existing save context so shortcut saves follow the
+      // same controller and GraphQL data-provider path as the built-in SaveButton.
       saveContext.save();
     };
 

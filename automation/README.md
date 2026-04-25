@@ -8,5 +8,11 @@ The `issue-processing` module provides the workflow entry point for loading issu
 
 - `processIssue.ts` is the Phase 1 entry point.
 - `classifyIssue.ts` is the dedicated classification boundary invoked immediately after issue content is available.
+- `dispositionSyntheticIssue.ts` contains the Phase 3 synthetic/non-actionable issue disposition policy.
 
-Phase 1 only establishes the boundary and call order. It does not yet apply synthetic-issue detection rules or perform issue/PR side effects.
+The issue-processing module now supports applying non-actionable synthetic-issue disposition through an automation-layer operations interface. When synthetic issue classification is detected and issue disposition operations are supplied, the automation plan will:
+
+- add the labels `triage/synthetic` and `won't-fix`
+- remove the label `needs-rca`
+- add a disposition comment explaining why no defect workflow will continue
+- close the issue through the injected issue-operations boundary

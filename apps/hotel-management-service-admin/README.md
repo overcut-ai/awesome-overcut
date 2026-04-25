@@ -32,6 +32,10 @@ Configuration for the client component can be provided through the use of enviro
 
 After configuration of the client the next step would be to run the application. Before running the client side of the component, make sure that the different pre-requisites are met - i.e., npm, docker. Make sure that the server-side of the application is running.
 
+## Repository verification note
+
+For synthetic triage issue #424, the admin app shell was reviewed to confirm whether a custom sidebar collapse implementation exists in this repository. The verification found that `src/App.tsx` uses the standard `react-admin` `<Admin />` setup with no custom layout, sidebar controller, or collapse logic, and no repo-local evidence was found for the reported application-wide shrink behavior.
+
 ```sh
 # installation of the dependencies
 $ npm install

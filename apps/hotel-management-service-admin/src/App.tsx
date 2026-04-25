@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Admin, DataProvider, Resource } from "react-admin";
+import React from "react";
+import { Admin, Resource } from "react-admin";
 import dataProvider from "./data-provider/graphqlDataProvider";
 import { theme } from "./theme/theme";
 import Login from "./Login";
@@ -23,6 +23,37 @@ import { CustomerEdit } from "./customer/CustomerEdit";
 import { CustomerShow } from "./customer/CustomerShow";
 import { jwtAuthProvider } from "./auth-provider/ra-auth-jwt";
 
+const saveEnabledResources = [
+  {
+    name: "Hotel",
+    list: HotelList,
+    edit: HotelEdit,
+    create: HotelCreate,
+    show: HotelShow,
+  },
+  {
+    name: "Room",
+    list: RoomList,
+    edit: RoomEdit,
+    create: RoomCreate,
+    show: RoomShow,
+  },
+  {
+    name: "Reservation",
+    list: ReservationList,
+    edit: ReservationEdit,
+    create: ReservationCreate,
+    show: ReservationShow,
+  },
+  {
+    name: "Customer",
+    list: CustomerList,
+    edit: CustomerEdit,
+    create: CustomerCreate,
+    show: CustomerShow,
+  },
+] as const;
+
 const App = (): React.ReactElement => {
   return (
     <div className="App">
@@ -34,34 +65,9 @@ const App = (): React.ReactElement => {
         dashboard={Dashboard}
         loginPage={Login}
       >
-        <Resource
-          name="Hotel"
-          list={HotelList}
-          edit={HotelEdit}
-          create={HotelCreate}
-          show={HotelShow}
-        />
-        <Resource
-          name="Room"
-          list={RoomList}
-          edit={RoomEdit}
-          create={RoomCreate}
-          show={RoomShow}
-        />
-        <Resource
-          name="Reservation"
-          list={ReservationList}
-          edit={ReservationEdit}
-          create={ReservationCreate}
-          show={ReservationShow}
-        />
-        <Resource
-          name="Customer"
-          list={CustomerList}
-          edit={CustomerEdit}
-          create={CustomerCreate}
-          show={CustomerShow}
-        />
+        {saveEnabledResources.map((resource) => (
+          <Resource key={resource.name} {...resource} />
+        ))}
       </Admin>
     </div>
   );

@@ -2,19 +2,19 @@ import * as React from "react";
 
 import {
   Edit,
-  SimpleForm,
   EditProps,
   TextInput,
   ReferenceArrayInput,
   SelectArrayInput,
 } from "react-admin";
 
+import { SaveShortcutForm } from "../Components/SaveShortcutForm";
 import { RoomTitle } from "../room/RoomTitle";
 
 export const HotelEdit = (props: EditProps): React.ReactElement => {
   return (
     <Edit {...props}>
-      <SimpleForm>
+      <SaveShortcutForm>
         <TextInput label="address" source="address" />
         <TextInput label="description" multiline source="description" />
         <TextInput label="name" source="name" />
@@ -25,7 +25,7 @@ export const HotelEdit = (props: EditProps): React.ReactElement => {
             format={(value: any) => value && value.map((v: any) => v.id)}
           />
         </ReferenceArrayInput>
-      </SimpleForm>
+      </SaveShortcutForm>
     </Edit>
   );
 };

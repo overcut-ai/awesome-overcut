@@ -2,7 +2,6 @@ import * as React from "react";
 
 import {
   Create,
-  SimpleForm,
   CreateProps,
   NumberInput,
   ReferenceInput,
@@ -12,13 +11,14 @@ import {
   SelectArrayInput,
 } from "react-admin";
 
+import { SaveShortcutForm } from "../Components/SaveShortcutForm";
 import { HotelTitle } from "../hotel/HotelTitle";
 import { ReservationTitle } from "../reservation/ReservationTitle";
 
 export const RoomCreate = (props: CreateProps): React.ReactElement => {
   return (
     <Create {...props}>
-      <SimpleForm>
+      <SaveShortcutForm>
         <NumberInput step={1} label="floor" source="floor" />
         <ReferenceInput source="hotel.id" reference="Hotel" label="Hotel">
           <SelectInput optionText={HotelTitle} />
@@ -32,7 +32,7 @@ export const RoomCreate = (props: CreateProps): React.ReactElement => {
           />
         </ReferenceArrayInput>
         <TextInput label="type" source="typeField" />
-      </SimpleForm>
+      </SaveShortcutForm>
     </Create>
   );
 };

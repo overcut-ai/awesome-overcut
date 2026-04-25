@@ -1,19 +1,19 @@
 import * as React from "react";
 import {
   Edit,
-  SimpleForm,
   EditProps,
   DateTimeInput,
   ReferenceInput,
   SelectInput,
 } from "react-admin";
+import { SaveShortcutForm } from "../Components/SaveShortcutForm";
 import { CustomerTitle } from "../customer/CustomerTitle";
 import { RoomTitle } from "../room/RoomTitle";
 
 export const ReservationEdit = (props: EditProps): React.ReactElement => {
   return (
     <Edit {...props}>
-      <SimpleForm>
+      <SaveShortcutForm>
         <DateTimeInput label="checkIn" source="checkIn" />
         <DateTimeInput label="checkOut" source="checkOut" />
         <ReferenceInput
@@ -26,7 +26,7 @@ export const ReservationEdit = (props: EditProps): React.ReactElement => {
         <ReferenceInput source="room.id" reference="Room" label="Room">
           <SelectInput optionText={RoomTitle} />
         </ReferenceInput>
-      </SimpleForm>
+      </SaveShortcutForm>
     </Edit>
   );
 };

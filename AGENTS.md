@@ -78,7 +78,7 @@ Notes:
 ### Backend Patterns
 - **Application composition**: domain modules aggregated in `src/app.module.ts`.
 - **Bootstrap**: `src/main.ts` configures global validation and exception filter behavior.
-- **API surfaces**: GraphQL endpoint and Swagger support are enabled from server bootstrap/config.
+- **API surfaces**: GraphQL endpoint and Swagger support are enabled from server bootstrap/config; REST routes are served under the global `/api` prefix.
 - **Data modeling**: Prisma schema is source of truth in `prisma/schema.prisma`; seed logic in `scripts/seed.ts`.
 
 ### Frontend Patterns
@@ -107,7 +107,9 @@ Notes:
 - Do not rename core domain directories (`hotel`, `room`, `reservation`, `customer`) without coordinated full-stack updates.
 - For data-model changes, treat Prisma schema updates and generated artifacts/migrations as part of one change unit.
 - Keep local development defaults documented:
-  - Server: `http://localhost:3000`
+  - Server base URL: `http://localhost:3000`
+  - GraphQL: `http://localhost:3000/graphql`
+  - Swagger / REST base path: `http://localhost:3000/api`
   - Admin: `http://localhost:3001`
 - Avoid introducing parallel infrastructure when existing global patterns already exist (validation, error filtering, providers).
 

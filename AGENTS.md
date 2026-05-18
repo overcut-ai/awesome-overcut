@@ -4,7 +4,7 @@
 `awesome-overcut` is a full-stack monorepo for a hotel-management system generated with Amplication and maintained as a reference/template project.
 
 It contains two standalone npm applications:
-- **Server**: NestJS API with GraphQL, Swagger, Prisma, authentication/authorization, and PostgreSQL integration.
+- **Server**: NestJS API with GraphQL, Swagger, Prisma, and PostgreSQL integration.
 - **Admin**: React + React-Admin application (Vite-based) for CRUD management of core entities.
 
 Primary business domains used consistently across backend and frontend:
@@ -19,7 +19,10 @@ Primary business domains used consistently across backend and frontend:
 awesome-overcut/
 ├── README.md
 ├── LICENSE
+├── overcut-loading.gif
+├── overcut-logo.png
 ├── migration/
+│   └── migration-architecture-analysis.md
 ├── apps/
 │   ├── hotel-management-service-server/
 │   │   ├── README.md

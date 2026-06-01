@@ -32,19 +32,34 @@ awesome-overcut/
 │   │   └── src/
 │   │       ├── app.module.ts
 │   │       ├── main.ts
+│   │       ├── connectMicroservices.ts
+│   │       ├── swagger.ts
+│   │       ├── decorators/
 │   │       ├── filters/
-│   │       ├── prisma/
+│   │       ├── health/
 │   │       ├── hotel/
-│   │       ├── room/
+│   │       ├── customer/
+│   │       ├── providers/
+│   │       ├── prisma/
 │   │       ├── reservation/
-│   │       └── customer/
+│   │       ├── room/
+│   │       ├── swagger/
+│   │       ├── tests/
+│   │       └── validators/
 │   └── hotel-management-service-admin/
 │       ├── README.md
 │       ├── package.json
 │       └── src/
 │           ├── App.tsx
-│           ├── data-provider/
+│           ├── Login.tsx
 │           ├── auth-provider/
+│           ├── data-provider/
+│           ├── Components/
+│           ├── api/
+│           ├── pages/
+│           ├── theme/
+│           ├── user/
+│           ├── util/
 │           ├── hotel/
 │           ├── room/
 │           ├── reservation/
@@ -69,25 +84,28 @@ Notes:
   1. Update `prisma/schema.prisma`
   2. Run `npm run prisma:generate`
   3. Apply migration/init flow as needed (`npm run db:init` or Prisma migration commands)
-- Reuse global infrastructure in `main.ts` (validation and exception handling) instead of introducing parallel mechanisms.
+- Prefer existing shared infrastructure folders such as `src/filters`, `src/providers`, `src/validators`, `src/swagger`, `src/decorators`, and `src/health` over adding duplicate framework wiring.
+- Reuse global infrastructure in `main.ts` and `connectMicroservices.ts` (validation, Swagger, microservice startup, and exception handling) instead of introducing parallel mechanisms.
 
 ### Frontend (Admin) Guidelines
 - Register/maintain resources centrally through `src/App.tsx`.
 - Follow React-Admin CRUD file patterns within each domain folder.
 - Keep API integration routed through existing `data-provider` and auth through `auth-provider`.
+- Reuse shared frontend folders such as `src/pages`, `src/theme`, `src/api`, `src/util`, `src/Components`, and `src/user` for cross-cutting UI and integration concerns.
 
 ## Code Patterns
 
 ### Backend Patterns
 - **Application composition**: domain modules aggregated in `src/app.module.ts`.
-- **Bootstrap**: `src/main.ts` configures global validation and exception filter behavior.
+- **Bootstrap**: `src/main.ts` configures the global `/api` prefix, validation pipe, Swagger setup, microservice startup, and HTTP exception filter behavior.
 - **API surfaces**: GraphQL endpoint and Swagger support are enabled from server bootstrap/config; REST routes are served under the global `/api` prefix.
+- **Supporting infrastructure**: shared helpers and framework integration live in folders such as `src/filters`, `src/providers`, `src/swagger`, `src/validators`, and `src/tests`.
 - **Data modeling**: Prisma schema is source of truth in `prisma/schema.prisma`; seed logic in `scripts/seed.ts`.
 
 ### Frontend Patterns
-- **Resource-per-entity** pattern in `src/App.tsx` with domain-specific components.
+- **Resource-per-entity** pattern in `src/App.tsx` with central React-Admin `Resource` registration for `Hotel`, `Room`, `Reservation`, and `Customer`.
 - **Domain folders** for CRUD screens under `src/hotel`, `src/room`, `src/reservation`, `src/customer`.
-- **Provider-based architecture** in `src/data-provider` and `src/auth-provider`.
+- **Provider-based architecture** in `src/data-provider` and `src/auth-provider`, with shared UI/application code in `src/pages`, `src/theme`, `src/api`, `src/user`, and `src/util`.
 
 ## Quality Standards
 
@@ -168,7 +186,12 @@ npm run build
 - Backend module aggregation: `apps/hotel-management-service-server/src/app.module.ts`
 - Prisma data model: `apps/hotel-management-service-server/prisma/schema.prisma`
 - Seed data script: `apps/hotel-management-service-server/scripts/seed.ts`
+- Backend test example: `apps/hotel-management-service-server/src/tests/health/health.service.spec.ts`
+- Backend Swagger config: `apps/hotel-management-service-server/src/swagger.ts`
 - Frontend resource registration: `apps/hotel-management-service-admin/src/App.tsx`
+- Frontend GraphQL data provider: `apps/hotel-management-service-admin/src/data-provider/graphqlDataProvider.ts`
+- Frontend JWT auth provider: `apps/hotel-management-service-admin/src/auth-provider/ra-auth-jwt.ts`
+- Frontend theme setup: `apps/hotel-management-service-admin/src/theme/theme.ts`
 
 ## Additional Resources
 - Amplication docs: <https://docs.amplication.com/guides/getting-started>
